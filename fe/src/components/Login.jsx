@@ -22,46 +22,95 @@ const Login = () => {
                 }
             )
             setMessage(response.data.message)
-            localStorage.setItem('token', response.data.token) // Lưu token
-            setTimeout(() => navigate('/'), 2000) // Chuyển hướng về trang chính
+            localStorage.setItem('token', response.data.token)
+            setTimeout(() => navigate('/home'), 2000) // Chuyển hướng về trang chính
         } catch (err) {
-            setError(err.response?.data?.error || 'Login failed')
+            setError(err.response?.data?.error || 'Đăng nhập thất bại')
         }
     }
 
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card shadow-lg">
+                        <div className="card-body p-4">
+                            <h2 className="text-center mb-4 text-2xl font-bold">
+                                Đăng nhập
+                            </h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="username"
+                                        className="form-label"
+                                    >
+                                        Tên đăng nhập
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        className="form-control"
+                                        value={username}
+                                        onChange={(e) =>
+                                            setUsername(e.target.value)
+                                        }
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="password"
+                                        className="form-label"
+                                    >
+                                        Mật khẩu
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        className="form-control"
+                                        value={password}
+                                        onChange={(e) =>
+                                            setPassword(e.target.value)
+                                        }
+                                        required
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary w-100 hover:bg-blue-600"
+                                >
+                                    Đăng nhập
+                                </button>
+                            </form>
+                            {message && (
+                                <div
+                                    className="alert alert-success mt-3"
+                                    role="alert"
+                                >
+                                    {message}
+                                </div>
+                            )}
+                            {error && (
+                                <div
+                                    className="alert alert-danger mt-3"
+                                    role="alert"
+                                >
+                                    {error}
+                                </div>
+                            )}
+                            <p className="text-center mt-3">
+                                Bạn chưa có tài khoản?{' '}
+                                <a
+                                    href="/register"
+                                    className="text-blue-500 hover:underline"
+                                >
+                                    Đăng ký
+                                </a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
-                </div>
-                <button type="submit" style={{ padding: '10px 20px' }}>
-                    Login
-                </button>
-            </form>
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <p>
-                Don't have an account? <a href="/register">Register here</a>
-            </p>
+            </div>
         </div>
     )
 }

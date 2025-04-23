@@ -24,55 +24,112 @@ const Register = () => {
                 }
             )
             setMessage(response.data.message)
-            setTimeout(() => navigate('/login'), 2000) // Chuyển hướng sau 2s
+            setTimeout(() => navigate('/login'), 2000) // Chuyển hướng về đăng nhập
         } catch (err) {
-            setError(err.response?.data?.error || 'Registration failed')
+            setError(err.response?.data?.error || 'Đăng ký thất bại')
         }
     }
 
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card shadow-lg">
+                        <div className="card-body p-4">
+                            <h2 className="text-center mb-4 text-2xl font-bold">
+                                Đăng ký
+                            </h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="username"
+                                        className="form-label"
+                                    >
+                                        Tên đăng nhập
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        className="form-control"
+                                        value={username}
+                                        onChange={(e) =>
+                                            setUsername(e.target.value)
+                                        }
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="password"
+                                        className="form-label"
+                                    >
+                                        Mật khẩu
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        className="form-control"
+                                        value={password}
+                                        onChange={(e) =>
+                                            setPassword(e.target.value)
+                                        }
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="confirmPassword"
+                                        className="form-label"
+                                    >
+                                        Xác nhận mật khẩu
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        className="form-control"
+                                        value={confirmPassword}
+                                        onChange={(e) =>
+                                            setConfirmPassword(e.target.value)
+                                        }
+                                        required
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary w-100 hover:bg-blue-600"
+                                >
+                                    Đăng ký
+                                </button>
+                            </form>
+                            {message && (
+                                <div
+                                    className="alert alert-success mt-3"
+                                    role="alert"
+                                >
+                                    {message}
+                                </div>
+                            )}
+                            {error && (
+                                <div
+                                    className="alert alert-danger mt-3"
+                                    role="alert"
+                                >
+                                    {error}
+                                </div>
+                            )}
+                            <p className="text-center mt-3">
+                                Bạn đã có tài khoản?{' '}
+                                <a
+                                    href="/login"
+                                    className="text-blue-500 hover:underline"
+                                >
+                                    Đăng nhập
+                                </a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Confirm Password:</label>
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        style={{ width: '100%', padding: '8px' }}
-                        required
-                    />
-                </div>
-                <button type="submit" style={{ padding: '10px 20px' }}>
-                    Register
-                </button>
-            </form>
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <p>
-                Already have an account? <a href="/login">Login here</a>
-            </p>
+            </div>
         </div>
     )
 }
