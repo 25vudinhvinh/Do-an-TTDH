@@ -6,13 +6,23 @@ const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [message, setMessage] = useState('')
-    const [error, setError] = useState('')
+    const [errors, setErrors] = useState({})
     const navigate = useNavigate()
+
+    const validateForm = () => {
+        const newErrors = {}
+        if (!username) newErrors.username = 'Vui lòng nhập tên đăng nhập'
+        if (!password) newErrors.password = 'Vui lòng nhập mật khẩu'
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setMessage('')
-        setError('')
+        setErrors({})
+        if (!validateForm()) return
+
         try {
             const response = await axios.post(
                 'http://localhost:5000/api/auth/login',
@@ -23,9 +33,13 @@ const Login = () => {
             )
             setMessage(response.data.message)
             localStorage.setItem('token', response.data.token)
-            setTimeout(() => navigate('/home'), 2000) // Chuyển hướng về trang chính
+            localStorage.setItem('avatar_url', response.data.avatar_url || '')
+            localStorage.setItem('username', username)
+            setTimeout(() => navigate('/home'), 2000)
         } catch (err) {
-            setError(err.response?.data?.error || 'Đăng nhập thất bại')
+            setErrors({
+                server: err.response?.data?.error || 'Đăng nhập thất bại',
+            })
         }
     }
 
@@ -36,7 +50,7 @@ const Login = () => {
                     <div className="card shadow-lg">
                         <div className="card-body p-4">
                             <h2 className="text-center mb-4 text-2xl font-bold">
-                                Đăng nhập
+                                Đăng Nhập
                             </h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
@@ -49,13 +63,17 @@ const Login = () => {
                                     <input
                                         type="text"
                                         id="username"
-                                        className="form-control"
+                                        className={`form-control ${errors.username ? 'is-invalid' : ''}`}
                                         value={username}
                                         onChange={(e) =>
                                             setUsername(e.target.value)
                                         }
-                                        required
                                     />
+                                    {errors.username && (
+                                        <div className="invalid-feedback">
+                                            {errors.username}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="mb-3">
                                     <label
@@ -67,19 +85,23 @@ const Login = () => {
                                     <input
                                         type="password"
                                         id="password"
-                                        className="form-control"
+                                        className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                                         value={password}
                                         onChange={(e) =>
                                             setPassword(e.target.value)
                                         }
-                                        required
                                     />
+                                    {errors.password && (
+                                        <div className="invalid-feedback">
+                                            {errors.password}
+                                        </div>
+                                    )}
                                 </div>
                                 <button
                                     type="submit"
                                     className="btn btn-primary w-100 hover:bg-blue-600"
                                 >
-                                    Đăng nhập
+                                    Đăng Nhập
                                 </button>
                             </form>
                             {message && (
@@ -90,21 +112,21 @@ const Login = () => {
                                     {message}
                                 </div>
                             )}
-                            {error && (
+                            {errors.server && (
                                 <div
                                     className="alert alert-danger mt-3"
                                     role="alert"
                                 >
-                                    {error}
+                                    {errors.server}
                                 </div>
                             )}
                             <p className="text-center mt-3">
-                                Bạn chưa có tài khoản?{' '}
+                                Chưa có tài khoản?{' '}
                                 <a
                                     href="/register"
                                     className="text-blue-500 hover:underline"
                                 >
-                                    Đăng ký
+                                    Đăng ký tại đây
                                 </a>
                             </p>
                         </div>

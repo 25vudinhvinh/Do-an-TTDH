@@ -6,28 +6,67 @@ const Register = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [avatar, setAvatar] = useState(null)
+    const [preview, setPreview] = useState(null)
     const [message, setMessage] = useState('')
-    const [error, setError] = useState('')
+    const [errors, setErrors] = useState({})
     const navigate = useNavigate()
+
+    const validateForm = () => {
+        const newErrors = {}
+        if (!username) newErrors.username = 'Vui lòng nhập tên đăng nhập'
+        if (!password) newErrors.password = 'Vui lòng nhập mật khẩu'
+        if (!confirmPassword)
+            newErrors.confirmPassword = 'Vui lòng nhập lại mật khẩu'
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            setAvatar(file)
+            setPreview(URL.createObjectURL(file))
+        } else {
+            setAvatar(null)
+            setPreview(null)
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setMessage('')
-        setError('')
+        setErrors({})
+        if (!validateForm()) return
+
+        const formData = new FormData()
+        formData.append('username', username)
+        formData.append('password', password)
+        formData.append('confirmPassword', confirmPassword)
+        if (avatar) formData.append('avatar', avatar)
+
         try {
             const response = await axios.post(
                 'http://localhost:5000/api/auth/register',
+                formData,
                 {
-                    username,
-                    password,
-                    confirmPassword,
+                    headers: { 'Content-Type': 'multipart/form-data' },
                 }
             )
             setMessage(response.data.message)
-            setTimeout(() => navigate('/login'), 2000) // Chuyển hướng về đăng nhập
+            setTimeout(() => navigate('/'), 2000)
         } catch (err) {
-            setError(err.response?.data?.error || 'Đăng ký thất bại')
+            setErrors({
+                server: err.response?.data?.error || 'Đăng ký thất bại',
+            })
         }
+    }
+
+    const getDefaultAvatar = () => {
+        if (preview) return preview
+        if (username)
+            return `https://via.placeholder.com/100/007bff/ffffff?text=${username.charAt(0).toUpperCase()}`
+        return 'https://via.placeholder.com/100/007bff/ffffff?text=U'
     }
 
     return (
@@ -37,9 +76,36 @@ const Register = () => {
                     <div className="card shadow-lg">
                         <div className="card-body p-4">
                             <h2 className="text-center mb-4 text-2xl font-bold">
-                                Đăng ký
+                                Đăng Ký
                             </h2>
+                            <div className="text-center mb-3">
+                                <img
+                                    src={getDefaultAvatar()}
+                                    alt="Avatar Preview"
+                                    className="rounded-circle"
+                                    style={{
+                                        width: '100px',
+                                        height: '100px',
+                                        objectFit: 'cover',
+                                    }}
+                                />
+                            </div>
                             <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="avatar"
+                                        className="form-label"
+                                    >
+                                        Ảnh đại diện
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="avatar"
+                                        className="form-control"
+                                        accept="image/*"
+                                        onChange={handleAvatarChange}
+                                    />
+                                </div>
                                 <div className="mb-3">
                                     <label
                                         htmlFor="username"
@@ -50,13 +116,17 @@ const Register = () => {
                                     <input
                                         type="text"
                                         id="username"
-                                        className="form-control"
+                                        className={`form-control ${errors.username ? 'is-invalid' : ''}`}
                                         value={username}
                                         onChange={(e) =>
                                             setUsername(e.target.value)
                                         }
-                                        required
                                     />
+                                    {errors.username && (
+                                        <div className="invalid-feedback">
+                                            {errors.username}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="mb-3">
                                     <label
@@ -68,13 +138,17 @@ const Register = () => {
                                     <input
                                         type="password"
                                         id="password"
-                                        className="form-control"
+                                        className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                                         value={password}
                                         onChange={(e) =>
                                             setPassword(e.target.value)
                                         }
-                                        required
                                     />
+                                    {errors.password && (
+                                        <div className="invalid-feedback">
+                                            {errors.password}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="mb-3">
                                     <label
@@ -86,19 +160,23 @@ const Register = () => {
                                     <input
                                         type="password"
                                         id="confirmPassword"
-                                        className="form-control"
+                                        className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
                                         value={confirmPassword}
                                         onChange={(e) =>
                                             setConfirmPassword(e.target.value)
                                         }
-                                        required
                                     />
+                                    {errors.confirmPassword && (
+                                        <div className="invalid-feedback">
+                                            {errors.confirmPassword}
+                                        </div>
+                                    )}
                                 </div>
                                 <button
                                     type="submit"
                                     className="btn btn-primary w-100 hover:bg-blue-600"
                                 >
-                                    Đăng ký
+                                    Đăng Ký
                                 </button>
                             </form>
                             {message && (
@@ -109,21 +187,21 @@ const Register = () => {
                                     {message}
                                 </div>
                             )}
-                            {error && (
+                            {errors.server && (
                                 <div
                                     className="alert alert-danger mt-3"
                                     role="alert"
                                 >
-                                    {error}
+                                    {errors.server}
                                 </div>
                             )}
                             <p className="text-center mt-3">
-                                Bạn đã có tài khoản?{' '}
+                                Đã có tài khoản?{' '}
                                 <a
-                                    href="/login"
+                                    href="/"
                                     className="text-blue-500 hover:underline"
                                 >
-                                    Đăng nhập
+                                    Đăng nhập tại đây
                                 </a>
                             </p>
                         </div>

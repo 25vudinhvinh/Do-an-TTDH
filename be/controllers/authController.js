@@ -4,26 +4,30 @@ const bcrypt = require("bcryptjs");
 
 exports.register = async (req, res) => {
     const { username, password, confirmPassword } = req.body;
+    const avatar_url = req.file ? `/uploads/${req.file.filename}` : null;
+
     if (!username || !password || !confirmPassword) {
-        return res.status(400).json({ error: "Ô này không dược để trống." });
+        return res
+            .status(400)
+            .json({ error: "Vui lòng nhập đầy đủ các trường" });
     }
     if (password !== confirmPassword) {
-        return res.status(400).json({ error: "Mật khẩu không khớp." });
+        return res.status(400).json({ error: "Mật khẩu không khớp" });
     }
     try {
         const existingUser = await User.findByUsername(username);
         if (existingUser) {
-            return res.status(400).json({ error: "Tài khoản đã tồn tại." });
+            return res.status(400).json({ error: "Tên đăng nhập đã tồn tại" });
         }
-        const user = await User.create(username, password);
+        const user = await User.create(username, password, avatar_url);
         res.status(201).json({
-            message: "Đăng ký tài khoản thành công,",
+            message: "Đăng ký thành công",
             user_id: user.user_id,
         });
     } catch (error) {
-        console.error("Đăng ký tài khoản thất bại.", error);
+        console.error("Registration error:", error);
         res.status(500).json({
-            error: "Đăng ký tài khoản thất bại.",
+            error: "Đăng ký thất bại",
             details: error.message,
         });
     }
@@ -32,21 +36,27 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
-        return res.status(400).json({ error: "Ô này không được để trống" });
+        return res
+            .status(400)
+            .json({ error: "Vui lòng nhập tên đăng nhập và mật khẩu" });
     }
     try {
         const user = await User.findByUsername(username);
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res
                 .status(401)
-                .json({ error: "Sai tài khoản hoặc mật khẩu." });
+                .json({ error: "Tên đăng nhập hoặc mật khẩu không đúng" });
         }
         const token = jwt.sign(
             { user_id: user.user_id },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
-        res.json({ message: "Đăng nhập thành công", token });
+        res.json({
+            message: "Đăng nhập thành công",
+            token,
+            avatar_url: user.avatar_url,
+        });
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({

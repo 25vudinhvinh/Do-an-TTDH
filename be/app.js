@@ -2,12 +2,25 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
+const multer = require("multer");
+const path = require("path");
 
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173" })); // Cho phép frontend từ cổng 5173
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+const upload = multer({ storage });
+
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
+app.use("/uploads", express.static("uploads")); // Phục vụ file ảnh
 
 app.use("/api/auth", authRoutes);
 
