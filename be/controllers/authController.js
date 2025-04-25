@@ -52,10 +52,14 @@ exports.login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
+        const avatar_url = user.avatar_url
+            ? `http://localhost:5000${user.avatar_url}`
+            : "";
         res.json({
             message: "Đăng nhập thành công",
             token,
-            avatar_url: user.avatar_url,
+            avatar_url,
+            username,
         });
     } catch (error) {
         console.error("Login error:", error);

@@ -1,21 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import App from './App.jsx'
-import Register from './components/Register.jsx'
-import Login from './components/Login.jsx'
-import Home from './components/Home.jsx'
-import './index.css'
+import Register from './pages/Register.jsx'
+import Login from './pages/Login.jsx'
+import Home from './pages/Home.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'leaflet/dist/leaflet.css'
+import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/home" element={<Home />} />
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/home" element={<Home />} />
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
