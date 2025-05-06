@@ -2,8 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
+const dataRoutes = require("./routes/dataRoutes");
 const multer = require("multer");
 const path = require("path");
+
+const categories = require("./models/Category");
 
 dotenv.config();
 const app = express();
@@ -20,14 +23,11 @@ const upload = multer({ storage });
 
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
-app.use("/uploads", express.static("uploads")); // Phục vụ file ảnh
+app.use("/uploads", express.static("uploads"));
 
+// api url
 app.use("/api/auth", authRoutes);
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: "Something went wrong!" });
-});
-
+app.get("/category", categories.getCategory);
+app.use("/api", dataRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

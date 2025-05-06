@@ -174,7 +174,7 @@ const Register = () => {
                                 </div>
                                 <button
                                     type="submit"
-                                    className="btn btn-primary w-100 hover:bg-blue-600"
+                                    className="btn btn-success w-100 hover:bg-green-800"
                                 >
                                     Đăng Ký
                                 </button>
@@ -199,7 +199,7 @@ const Register = () => {
                                 Đã có tài khoản?{' '}
                                 <a
                                     href="/"
-                                    className="text-blue-500 hover:underline"
+                                    className="text-green-500 hover:underline"
                                 >
                                     Đăng nhập tại đây
                                 </a>

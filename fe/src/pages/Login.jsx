@@ -26,10 +26,7 @@ const Login = () => {
         try {
             const response = await axios.post(
                 'http://localhost:5000/api/auth/login',
-                {
-                    username,
-                    password,
-                }
+                { username, password }
             )
             setMessage(response.data.message)
             localStorage.setItem('token', response.data.token)
@@ -44,100 +41,65 @@ const Login = () => {
     }
 
     return (
-        <div
-            style={{
-                maxWidth: '400px',
-                margin: '50px auto',
-                padding: '20px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-            }}
-        >
-            <h2 style={{ textAlign: 'center' }}>Đăng Nhập</h2>
-            <div>
-                <label htmlFor="username">Tên đăng nhập</label>
-                <input
-                    type="text"
-                    id="username"
-                    style={{
-                        width: '100%',
-                        padding: '8px',
-                        margin: '8px 0',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                {errors.username && (
-                    <div style={{ color: 'red' }}>{errors.username}</div>
-                )}
-            </div>
-            <div>
-                <label htmlFor="password">Mật khẩu</label>
-                <input
-                    type="password"
-                    id="password"
-                    style={{
-                        width: '100%',
-                        padding: '8px',
-                        margin: '8px 0',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                    }}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                {errors.password && (
-                    <div style={{ color: 'red' }}>{errors.password}</div>
-                )}
-            </div>
-            <button
-                type="submit"
-                onClick={handleSubmit}
-                style={{
-                    width: '100%',
-                    padding: '10px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                }}
-            >
-                Đăng Nhập
-            </button>
-            {message && (
-                <div
-                    style={{
-                        marginTop: '10px',
-                        color: 'green',
-                        textAlign: 'center',
-                    }}
-                >
-                    {message}
+        <div className="max-w-sm mx-auto my-12 p-6 border border-gray-300 rounded-md shadow-md">
+            <h2 className="text-center text-2xl font-semibold">Đăng Nhập</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="username" className="block mb-1">
+                        Tên đăng nhập
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        className={`w-full p-2 border rounded ${errors.username ? 'border-red-500' : 'border-gray-300'}`}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    {errors.username && (
+                        <div className="text-red-500">{errors.username}</div>
+                    )}
                 </div>
-            )}
-            {errors.server && (
-                <div
-                    style={{
-                        marginTop: '10px',
-                        color: 'red',
-                        textAlign: 'center',
-                    }}
-                >
-                    {errors.server}
+                <div className="mb-4">
+                    <label htmlFor="password" className="block mb-1">
+                        Mật khẩu
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        className={`w-full p-2 border rounded ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {errors.password && (
+                        <div className="text-red-500">{errors.password}</div>
+                    )}
                 </div>
-            )}
-            <p style={{ textAlign: 'center', marginTop: '10px' }}>
-                Chưa có tài khoản?{' '}
-                <a
-                    href="/register"
-                    style={{ color: '#007bff', textDecoration: 'none' }}
+                <button
+                    type="submit"
+                    className="w-full p-2 bg-green-700 text-white rounded hover:bg-green-800"
                 >
-                    Đăng ký tại đây
-                </a>
-            </p>
+                    Đăng Nhập
+                </button>
+                {message && (
+                    <div className="mt-2 text-green-700 text-center">
+                        {message}
+                    </div>
+                )}
+                {errors.server && (
+                    <div className="mt-2 text-red-500 text-center">
+                        {errors.server}
+                    </div>
+                )}
+                <p className="text-center mt-4">
+                    Chưa có tài khoản?{' '}
+                    <a
+                        href="/register"
+                        className="text-green-700 hover:underline"
+                    >
+                        Đăng ký tại đây
+                    </a>
+                </p>
+            </form>
         </div>
     )
 }

@@ -31,7 +31,7 @@ const Avatar = ({ avatarUrl, username }) => {
                 <img
                     src={getAvatar()}
                     alt="Avatar"
-                    className="rounded-circle"
+                    className="rounded-full"
                     style={{
                         width: '40px',
                         height: '40px',
@@ -40,9 +40,13 @@ const Avatar = ({ avatarUrl, username }) => {
                     onError={() => setImageError(true)}
                 />
             </Dropdown.Toggle>
-            <Dropdown.Menu>
-                <p className="text-5px">@{username}</p>
-                <Dropdown.Item onClick={handleLogout}>Đăng Xuất</Dropdown.Item>
+            <Dropdown.Menu className="flex flex-col items-center">
+                <p className="text-sm text-center mb-1 text-green-700">
+                    @{username}
+                </p>
+                <Dropdown.Item onClick={handleLogout} className="text-center">
+                    Đăng Xuất
+                </Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
     )

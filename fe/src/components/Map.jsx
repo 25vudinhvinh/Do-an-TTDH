@@ -1,4 +1,10 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import {
+    MapContainer,
+    TileLayer,
+    Marker,
+    Popup,
+    ZoomControl,
+} from 'react-leaflet'
 
 function Map() {
     return (
@@ -8,14 +14,14 @@ function Map() {
                 center={[21.0285, 105.8542]}
                 zoom={15}
                 scrollWheelZoom={true}
+                zoomControl={false}
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://carto.com/attributions">CARTO</a>'
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                 />
-                <Marker position={[21.0285, 105.8542]}>
-                    <Popup>Hà Nội</Popup>
-                </Marker>
+
+                <ZoomControl position="bottomright" />
             </MapContainer>
         </div>
     )
