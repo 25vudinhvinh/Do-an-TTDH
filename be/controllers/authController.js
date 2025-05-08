@@ -4,7 +4,9 @@ const bcrypt = require("bcryptjs");
 
 exports.register = async (req, res) => {
     const { username, password, confirmPassword } = req.body;
-    const avatar_url = req.file ? `/uploads/${req.file.filename}` : null;
+    const avatar_url = req.file
+        ? `/uploads/avatars/${req.file.filename}`
+        : null;
 
     if (!username || !password || !confirmPassword) {
         return res

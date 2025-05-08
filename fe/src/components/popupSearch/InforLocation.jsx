@@ -92,6 +92,7 @@ function InforLocation({ item }) {
 
     const renderContent = () => {
         switch (activeTab) {
+            // done
             case 'overview':
                 return (
                     <div className="p-4 max-h-[calc(100%-340px)]">
@@ -144,6 +145,7 @@ function InforLocation({ item }) {
                         </div>
                     </div>
                 )
+            // done
             case 'images':
                 console.log('other_images:', item.other_images) // Debug
                 const otherImages = item.other_images
@@ -174,6 +176,7 @@ function InforLocation({ item }) {
                         )}
                     </div>
                 )
+
             case 'reviews':
                 return (
                     <div className="p-4 max-h-[calc(100%-340px)]">
@@ -242,7 +245,11 @@ function InforLocation({ item }) {
                                         <div className="flex items-center gap-2">
                                             <img
                                                 className="rounded-full w-[40px] h-[40px] object-cover"
-                                                src={review.avatar_url}
+                                                src={
+                                                    review.avatar_url
+                                                        ? `http://localhost:5000${review.avatar_url}`
+                                                        : 'https://via.placeholder.com/40'
+                                                }
                                                 alt=""
                                             />
                                             <p className="font-medium text-sm text-gray-700">
