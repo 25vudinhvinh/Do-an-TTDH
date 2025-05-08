@@ -5,6 +5,8 @@ const GlobalContext = createContext()
 const ContextProvider = ({ children }) => {
     const [inputValue, setInputValue] = useState('')
     const [locationSearch, setLocationSearch] = useState([])
+    const [selectedLocation, setSelectedLocation] = useState(null) // Lưu địa điểm được chọn
+
     return (
         <GlobalContext.Provider
             value={{
@@ -12,6 +14,8 @@ const ContextProvider = ({ children }) => {
                 setInputValue,
                 locationSearch,
                 setLocationSearch,
+                selectedLocation,
+                setSelectedLocation,
             }}
         >
             {children}

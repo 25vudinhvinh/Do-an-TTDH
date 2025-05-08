@@ -1,17 +1,18 @@
 import saveIcon from '../assets/save.svg'
 import historyIcon from '../assets/history.svg'
 import { useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import saveGrennIcon from '~/assets/save-green.svg'
 import historyGrennIcon from '~/assets/history-green.svg'
+import { GlobalContext } from '../context/GlobalContext'
 
 function Navigation() {
     const navigate = useNavigate()
     const location = useLocation()
     const [recent, setRecent] = useState(false)
     const [saved, setSaved] = useState(false)
-
+    const { setLocationSearch } = useContext(GlobalContext)
     useEffect(() => {
         if (location.pathname === '/home') {
             setRecent(false)
@@ -24,11 +25,18 @@ function Navigation() {
             setSaved(false)
         }
     }, [location.pathname])
-
+    const handleClickSaved = () => {
+        navigate('/home/saved')
+        setLocationSearch([])
+    }
+    const handleClickRecent = () => {
+        setLocationSearch([])
+        navigate('/home/recent')
+    }
     return (
         <div className="bg-blue-50 w-full h-full flex flex-col gap-4 pt-25">
             <nav
-                onClick={() => navigate('/home/saved')}
+                onClick={handleClickSaved}
                 className="flex flex-col items-center hover:cursor-pointer select-none"
             >
                 <img
@@ -43,7 +51,7 @@ function Navigation() {
                 </p>
             </nav>
             <nav
-                onClick={() => navigate('/home/recent')}
+                onClick={handleClickRecent}
                 className="flex flex-col items-center hover:cursor-pointer select-none"
             >
                 <img

@@ -32,6 +32,7 @@ const Login = () => {
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('avatar_url', response.data.avatar_url || '')
             localStorage.setItem('username', response.data.username || username)
+            localStorage.setItem('user_id', response.data.user_id || '')
             setTimeout(() => navigate('/home'), 2000)
         } catch (err) {
             setErrors({

@@ -1,12 +1,23 @@
+import { useContext } from 'react'
 import {
     MapContainer,
     TileLayer,
     Marker,
-    Popup,
     ZoomControl,
+    Tooltip,
 } from 'react-leaflet'
+import { GlobalContext } from '../context/GlobalContext'
+import L from 'leaflet'
 
 function Map() {
+    const { locationSearch } = useContext(GlobalContext)
+
+    const iconMar = L.icon({
+        iconUrl: 'src/assets/eat.svg',
+        iconAnchor: [0, 0],
+        iconSize: [25, 25],
+    })
+
     return (
         <div className="w-full h-full">
             <MapContainer
@@ -17,10 +28,18 @@ function Map() {
                 zoomControl={false}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://carto.com/attributions">CARTO</a>'
+                    attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://carto.com/attributions">CARTO</a>'
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                 />
-
+                {locationSearch.map((item, key) => (
+                    <Marker
+                        key={key}
+                        position={[item.latitude, item.longitude]}
+                        icon={iconMar}
+                    >
+                        <Tooltip permanent>{item.name}</Tooltip>
+                    </Marker>
+                ))}
                 <ZoomControl position="bottomright" />
             </MapContainer>
         </div>
