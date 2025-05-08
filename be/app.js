@@ -6,6 +6,7 @@ const dataRoutes = require("./routes/dataRoutes");
 const multer = require("multer");
 const path = require("path");
 
+const reviewRoutes = require("./routes/reviewRoutes");
 const categories = require("./models/Category");
 
 dotenv.config();
@@ -29,5 +30,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.get("/category", categories.getCategory);
 app.use("/api", dataRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
