@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import {
     MapContainer,
     TileLayer,
@@ -10,13 +10,32 @@ import { GlobalContext } from '../context/GlobalContext'
 import L from 'leaflet'
 
 function Map() {
-    const { locationSearch } = useContext(GlobalContext)
+    const { locationSearch, selectedLocation } = useContext(GlobalContext)
+    const mapRef = useRef(null)
 
-    const iconMar = L.icon({
+    // Icon mặc định
+    const defaultIcon = L.icon({
         iconUrl: 'src/assets/eat.svg',
-        iconAnchor: [0, 0],
+        iconAnchor: [12.5, 25],
         iconSize: [25, 25],
     })
+
+    // Marker đỏ cho địa điểm được chọn
+    const selectedIcon = L.icon({
+        iconUrl: 'src/assets/red_marker.svg',
+        iconAnchor: [12.5, 25],
+        iconSize: [45, 45],
+    })
+
+    // Cập nhật trung tâm và zoom khi selectedLocation thay đổi
+    useEffect(() => {
+        if (selectedLocation && mapRef.current) {
+            const map = mapRef.current
+            // Lệch trung tâm sang phải bằng cách giảm kinh độ
+            const offsetLongitude = selectedLocation.longitude - 0.008
+            map.setView([selectedLocation.latitude, offsetLongitude], 16)
+        }
+    }, [selectedLocation])
 
     return (
         <div className="w-full h-full">
@@ -26,6 +45,7 @@ function Map() {
                 zoom={15}
                 scrollWheelZoom={true}
                 zoomControl={false}
+                ref={mapRef}
             >
                 <TileLayer
                     attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://carto.com/attributions">CARTO</a>'
@@ -35,9 +55,15 @@ function Map() {
                     <Marker
                         key={key}
                         position={[item.latitude, item.longitude]}
-                        icon={iconMar}
+                        icon={
+                            selectedLocation?.location_id === item.location_id
+                                ? selectedIcon
+                                : defaultIcon
+                        }
                     >
-                        <Tooltip permanent>{item.name}</Tooltip>
+                        <Tooltip className="font-semibold opacity-80">
+                            {item.name}
+                        </Tooltip>
                     </Marker>
                 ))}
                 <ZoomControl position="bottomright" />

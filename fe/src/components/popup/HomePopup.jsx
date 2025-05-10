@@ -27,10 +27,10 @@ function HomePopup() {
 
     return (
         <div className="relative w-full">
-            <div className="flex items-center relative bg-white shadow-md rounded-2xl px-3 mt-3 ml-2 z-10 outline-1">
+            <div className="flex items-center relative bg-white shadow-md rounded-2xl px-3 mt-3 ml-2 z-10 border-gray-100 border-2">
                 <div className="flex-1 ">
                     <input
-                        className="w-full bg-white p-2 rounded-2xl select-none outline-none placeholder:text-[12px] placeholder:text-gray-500"
+                        className="w-full bg-white p-2 rounded-2xl select-none outline-none font-semibold text-sm opacity-80 placeholder:text-[12px] placeholder:text-gray-500"
                         placeholder="Tìm kiếm trên Maps"
                         type="text"
                         value={inputValue}

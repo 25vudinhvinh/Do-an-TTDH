@@ -1,29 +1,27 @@
-import { useState, useContext } from 'react'
+import { useContext, useState } from 'react'
 import InforLocation from './InforLocation'
 import { GlobalContext } from '../../context/GlobalContext'
-
 import Rating from '@mui/material/Rating'
 
-function Location({ item, onClick }) {
-    const { selectedLocation } = useContext(GlobalContext)
-    const [isPopupOpen, setIsPopupOpen] = useState(false)
-
+function Location({ item, onClick, distance }) {
+    const { selectedLocation, setSelectedLocation } = useContext(GlobalContext)
+    const [showPopupInfor, setShowPopupInfor] = useState(false)
     return (
         <div
             onClick={() => {
                 onClick()
-                setIsPopupOpen(true)
+                setSelectedLocation(item)
+                setShowPopupInfor(true)
             }}
-            className="border-gray-200 border-t-2 my-0.5 hover:bg-gray-200"
+            className="border-gray-200 border-b-2 select-none my-0.5 hover:bg-gray-200 rounded"
         >
             <div className="flex min-h-30 justify-between items-center cursor-pointer">
                 <div>
                     <p className="font-semibold text-lg">{item.name}</p>
-
                     <p className="text-sm font-semibold opacity-60">
                         {item.address}
                     </p>
-                    <span className="flex items-center gap-1 text-md font-semibold ">
+                    <span className="flex items-center gap-1 text-md font-semibold">
                         <p className="opacity-60">{item.average_rating}</p>
                         <Rating
                             name="simple-controlled"
@@ -36,6 +34,11 @@ function Location({ item, onClick }) {
                     <p className="text-green-700 text-sm font-semibold opacity-60">
                         Giờ mở cửa: {item.open_hours}
                     </p>
+                    {distance ? (
+                        <span className="text-sm text-red-600 font-semibold">
+                            {distance} Km
+                        </span>
+                    ) : null}
                 </div>
                 <div>
                     <img
@@ -50,10 +53,15 @@ function Location({ item, onClick }) {
                     {item.additional_services.split(', ').join(' - ')}
                 </p>
             </div>
-            {isPopupOpen &&
-                selectedLocation?.location_id === item.location_id && (
-                    <InforLocation key={item.location_id} item={item} />
-                )}
+            {showPopupInfor && (
+                <InforLocation
+                    show={showPopupInfor}
+                    setShow={setShowPopupInfor}
+                />
+            )}
+            {/* {selectedLocation?.location_id === item.location_id && (
+                <InforLocation />
+            )} */}
         </div>
     )
 }

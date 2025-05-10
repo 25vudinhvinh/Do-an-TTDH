@@ -1,3 +1,4 @@
+// contexr/GlobalContext.jsx
 import { createContext, useState } from 'react'
 
 const GlobalContext = createContext()
@@ -5,7 +6,7 @@ const GlobalContext = createContext()
 const ContextProvider = ({ children }) => {
     const [inputValue, setInputValue] = useState('')
     const [locationSearch, setLocationSearch] = useState([])
-    const [selectedLocation, setSelectedLocation] = useState(null) // Lưu địa điểm được chọn
+    const [selectedLocation, setSelectedLocation] = useState(null)
 
     return (
         <GlobalContext.Provider

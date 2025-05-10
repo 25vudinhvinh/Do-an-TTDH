@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const authRoutes = require("./routes/authRoutes");
-const dataRoutes = require("./routes/dataRoutes");
+const authRouter = require("./routes/authRouter");
+const locationDetail = require("./routes/locationDetailRouter");
 const multer = require("multer");
 const path = require("path");
 
-const reviewRoutes = require("./routes/reviewRoutes");
+const reviewRoutes = require("./routes/reviewRouter");
 const categories = require("./models/Category");
 
 dotenv.config();
@@ -27,9 +27,9 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 // api url
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRouter);
 app.get("/category", categories.getCategory);
-app.use("/api", dataRoutes);
+app.use("/api", locationDetail);
 app.use("/api/reviews", reviewRoutes);
 
 const PORT = process.env.PORT || 5000;

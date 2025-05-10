@@ -1,12 +1,13 @@
 import { useContext, useState, useEffect } from 'react'
 import closeIcon from '~/assets/close.svg'
 import saveIcon from '~/assets/save.svg'
+import checkIcon from '~/assets/check.svg'
 import { GlobalContext } from '../../context/GlobalContext'
 import Rating from '@mui/material/Rating'
 import axios from 'axios'
 
-function InforLocation({ item }) {
-    const { setSelectedLocation } = useContext(GlobalContext)
+function InforLocation({ setShow, show }) {
+    const { selectedLocation } = useContext(GlobalContext)
     const [activeTab, setActiveTab] = useState('overview')
     const avatar_url = localStorage.getItem('avatar_url')
     const username = localStorage.getItem('username') || 'User'
@@ -15,15 +16,15 @@ function InforLocation({ item }) {
     const [comment, setComment] = useState('')
     const [images, setImages] = useState([])
     const [imagePreviews, setImagePreviews] = useState([])
-    const [reviews, setReviews] = useState([]) // State cho danh sách đánh giá
-
-    // Lấy danh sách đánh giá khi tab "Bài đánh giá" được chọn
+    const [reviews, setReviews] = useState([])
+    const [showToast, setShowToast] = useState(false)
+    const [toastMessage, setToastMessage] = useState('')
     useEffect(() => {
         if (activeTab === 'reviews') {
             const fetchReviews = async () => {
                 try {
                     const response = await axios.get(
-                        `http://localhost:5000/api/reviews?location_id=${item.location_id}`
+                        `http://localhost:5000/api/reviews?location_id=${selectedLocation.location_id}`
                     )
                     setReviews(response.data)
                 } catch (error) {
@@ -32,7 +33,7 @@ function InforLocation({ item }) {
             }
             fetchReviews()
         }
-    }, [activeTab, item.location_id])
+    }, [activeTab, selectedLocation.location_id])
 
     const handleChangeStar = (e, newStar) => {
         setStar(newStar)
@@ -48,42 +49,40 @@ function InforLocation({ item }) {
     const handleReviewSubmit = async (e) => {
         e.preventDefault()
         if (!star) {
-            alert('Vui lòng chọn số sao!')
+            setToastMessage('Vui lòng chọn số sao!')
             return
         }
 
         const formData = new FormData()
-        formData.append('location_id', item.location_id)
+        formData.append('location_id', selectedLocation.location_id)
         formData.append('rating', star)
         formData.append('comment', comment || '')
         images.forEach((image) => formData.append('images', image))
 
-        try {
-            await axios.post('http://localhost:5000/api/reviews', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            alert('Đánh giá đã được gửi!')
-            // Reset form
-            setStar(0)
-            setComment('')
-            setImages([])
-            setImagePreviews([])
-            // Làm mới danh sách đánh giá
-            const response = await axios.get(
-                `http://localhost:5000/api/reviews?location_id=${item.location_id}`
-            )
-            setReviews(response.data)
-        } catch (error) {
-            alert(
-                'Có lỗi xảy ra: ' +
-                    (error.response?.data?.error || 'Lỗi server')
-            )
-        }
-    }
+        await axios.post('http://localhost:5000/api/reviews', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        showToastMessage('Đánh giá đã được gửi!')
 
+        setStar(0)
+        setComment('')
+        setImages([])
+        setImagePreviews([])
+        const response = await axios.get(
+            `http://localhost:5000/api/reviews?location_id=${selectedLocation.location_id}`
+        )
+        setReviews(response.data)
+    }
+    const showToastMessage = (message) => {
+        setToastMessage(message)
+        setShowToast(true)
+        setTimeout(() => {
+            setShowToast(false)
+        }, 2500)
+    }
     const tabs = [
         { id: 'overview', label: 'Tổng quan' },
         { id: 'images', label: 'Hình ảnh' },
@@ -92,7 +91,6 @@ function InforLocation({ item }) {
 
     const renderContent = () => {
         switch (activeTab) {
-            // done
             case 'overview':
                 return (
                     <div className="p-4 max-h-[calc(100%-340px)]">
@@ -102,7 +100,7 @@ function InforLocation({ item }) {
                                     Địa chỉ:
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {item.address ||
+                                    {selectedLocation.address ||
                                         'Chưa có thông tin địa chỉ.'}
                                 </p>
                             </div>
@@ -111,7 +109,7 @@ function InforLocation({ item }) {
                                     Giờ mở cửa:
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {item.open_hours ||
+                                    {selectedLocation.open_hours ||
                                         'Chưa có thông tin giờ mở cửa.'}
                                 </p>
                             </div>
@@ -120,7 +118,7 @@ function InforLocation({ item }) {
                                     Mô tả:
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {item.description ||
+                                    {selectedLocation.description ||
                                         'Chưa có thông tin mô tả.'}
                                 </p>
                             </div>
@@ -129,7 +127,7 @@ function InforLocation({ item }) {
                                     Dịch vụ bổ sung:
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {item.additional_services ||
+                                    {selectedLocation.additional_services ||
                                         'Chưa có thông tin dịch vụ.'}
                                 </p>
                             </div>
@@ -138,20 +136,25 @@ function InforLocation({ item }) {
                                     Đánh giá:
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    {item.average_rating} sao (
-                                    {item.review_count} đánh giá)
+                                    {selectedLocation.average_rating} sao (
+                                    {selectedLocation.review_count} đánh giá)
                                 </p>
                             </div>
                         </div>
+                        <span className="p-2"></span>
                     </div>
                 )
-            // done
             case 'images':
-                console.log('other_images:', item.other_images) // Debug
-                const otherImages = item.other_images
-                    ? item.other_images.split(', ').filter(Boolean)
+                const reviewImages = selectedLocation.review_image_urls
+                    ? selectedLocation.review_image_urls
+                          .split(', ')
+                          .map((url) => `http://localhost:5000${url.trim()}`)
                     : []
-                const uniqueImages = [...new Set(otherImages)]
+                const otherImages = selectedLocation.other_images
+                    ? selectedLocation.other_images.split(', ').filter(Boolean)
+                    : []
+                const combinedImages = [...reviewImages, ...otherImages]
+                const uniqueImages = [...new Set(combinedImages)]
                 return (
                     <div className="p-4 max-h-[calc(100%-340px)]">
                         {uniqueImages.length > 0 ? (
@@ -174,9 +177,9 @@ function InforLocation({ item }) {
                                 Chưa có hình ảnh.
                             </p>
                         )}
+                        <span className="p-2"></span>
                     </div>
                 )
-
             case 'reviews':
                 return (
                     <div className="p-4 max-h-[calc(100%-340px)]">
@@ -216,13 +219,13 @@ function InforLocation({ item }) {
                                 )}
                                 <Rating
                                     value={star}
-                                    size="small"
+                                    size="medium"
                                     onChange={handleChangeStar}
                                     name="user-rating"
                                 />
                                 <textarea
                                     placeholder="Nhập đánh giá của bạn"
-                                    className="w-full p-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                                    className="w-full p-2 border rounded-lg text-sm font-semibold opacity-80 focus:outline-none focus:ring-2 focus:ring-gray-300"
                                     rows="4"
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
@@ -301,23 +304,36 @@ function InforLocation({ item }) {
                                 Chưa có bài đánh giá.
                             </p>
                         )}
+                        <span className="p-2"></span>
                     </div>
                 )
             default:
                 return null
         }
     }
-
+    console.log(show)
     return (
         <div className="fixed left-[33%] bg-white shadow-xl bottom-2 top-[15%] right-[38%] rounded-2xl scrollbar-hidden overflow-auto">
+            {/* Toast Notification */}
+            {showToast && (
+                <div className="fixed top-20 right-2 bg-white w-[20%] p-3 rounded shadow-2xl transition-transform duration-300 ease-in-out transform translate-x-full animate-slide-in">
+                    <div className="flex items-center gap-2">
+                        <img className="w-[25px]" src={checkIcon} alt="check" />
+                        <span className="font-semibold text-sm text-wrap text-green-800">
+                            {toastMessage}
+                        </span>
+                    </div>
+                </div>
+            )}
+
             <div className="w-full relative">
                 <img
                     className="w-full h-[260px] object-cover rounded-t-2xl"
-                    src={item.primary_image}
-                    alt={item.name}
+                    src={selectedLocation.primary_image}
+                    alt={selectedLocation.name}
                 />
                 <div
-                    onClick={() => setSelectedLocation(null)}
+                    onClick={() => setShow(false)}
                     className="bg-white p-1.5 rounded-full absolute top-3 right-3 cursor-pointer shadow-md"
                 >
                     <img className="w-5" src={closeIcon} alt="Đóng" />
@@ -326,20 +342,28 @@ function InforLocation({ item }) {
             <div className="w-full p-4 flex justify-between items-center">
                 <div>
                     <p className="font-bold text-2xl text-gray-800">
-                        {item.name}
+                        {selectedLocation.name}
                     </p>
                     <span className="flex items-center gap-1 text-md font-semibold">
-                        <p className="opacity-60">{item.average_rating}</p>
+                        <p className="opacity-60">
+                            {selectedLocation.average_rating}
+                        </p>
                         <Rating
                             name="simple-controlled"
-                            value={item.average_rating}
+                            value={selectedLocation.average_rating}
                             readOnly
                             sx={{ '& .MuiRating-icon': { fontSize: '0.8rem' } }}
                         />
-                        <p className="opacity-60">({item.review_count})</p>
+                        <p className="opacity-60">
+                            ({selectedLocation.review_count})
+                        </p>
                     </span>
                     <p className="font-medium text-sm text-gray-500">
-                        {item.category_names.split(', ').join(' - ')}
+                        {selectedLocation.category_names
+                            ? selectedLocation.category_names
+                                  .split(', ')
+                                  .join(' - ')
+                            : 'Không có danh mục'}
                     </p>
                 </div>
                 <div>

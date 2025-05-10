@@ -33,19 +33,22 @@ const Avatar = ({ avatarUrl, username }) => {
                     alt="Avatar"
                     className="rounded-full"
                     style={{
-                        width: '40px',
-                        height: '40px',
+                        width: '50px',
+                        height: '50px',
                         objectFit: 'cover',
                     }}
                     onError={() => setImageError(true)}
                 />
             </Dropdown.Toggle>
             <Dropdown.Menu className="flex flex-col items-center">
-                <p className="text-sm text-center mb-1 text-green-700">
+                <p className="text-sm text-center font-semibold mb-1 text-green-700">
                     @{username}
                 </p>
-                <Dropdown.Item onClick={handleLogout} className="text-center">
-                    Đăng Xuất
+                <Dropdown.Item
+                    onClick={handleLogout}
+                    className="text-center font-semibold "
+                >
+                    Đăng xuất
                 </Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>

@@ -32,7 +32,7 @@ const Home = () => {
             <div className="fixed left-[65px] top-0 w-[27%] z-2">
                 <Popup />
             </div>
-            <div className="fixed left-[40%] w-[45%] top-3 z-20 overflow-x-hidden">
+            <div className="fixed left-[40%] w-[45%] top-6 z-20 overflow-x-hidden">
                 <ButtonGroup />
             </div>
             <div className="fixed right-[20px] top-3 z-99">
