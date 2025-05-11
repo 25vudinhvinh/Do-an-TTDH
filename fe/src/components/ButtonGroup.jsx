@@ -17,7 +17,10 @@ function ButtonGroup() {
     }, [])
 
     return (
-        <div className="w-full h-full flex items-center justify-around gap-3">
+        <div
+            tabIndex="-1"
+            className="w-full h-full  flex items-center overflow-x-scroll scrollbar-hidden justify-around gap-3"
+        >
             {category.map((item, key) => {
                 return (
                     <Button onClick={handleButton} key={key} text={item.name} />

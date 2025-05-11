@@ -41,7 +41,7 @@ function HomePopup() {
                     <img src={search} alt="Search icon" />
                 </div>
             </div>
-            {locationSearch.length > 0 && (
+            {locationSearch?.length > 0 && (
                 <div className="fixed top-0 left-[65px] w-[28%] bottom-0 bg-white rounded-2xl shadow-md z-0">
                     <SearchResult />
                 </div>

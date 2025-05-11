@@ -1,10 +1,12 @@
-import React from 'react'
 import closeIcon from '~/assets/close.svg'
 import importainIcon from '~/assets/importain.svg'
 import { useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
+import { GlobalContext } from '../../context/GlobalContext'
 
 const SavedPopup = () => {
     const navigate = useNavigate()
+    const { setShowButtonGroup } = useContext(GlobalContext)
     return (
         <div className="w-full shadow-md bg-white">
             <div className="flex items-center justify-between">
@@ -18,7 +20,10 @@ const SavedPopup = () => {
                 </h2>
                 <img
                     className="cursor-pointer w-8"
-                    onClick={() => navigate('/home')}
+                    onClick={() => {
+                        navigate('/home')
+                        setShowButtonGroup(true)
+                    }}
                     src={closeIcon}
                     alt=""
                 />

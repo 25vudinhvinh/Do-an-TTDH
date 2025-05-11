@@ -37,7 +37,7 @@ const getLocationsAlls = async (req, res) => {
 
     res.json(results.rows);
 };
-const getNerbyLocations = async (req, res) => {
+const getNearbyLocations = async (req, res) => {
     const { latitude, longitude, radius } = req.body;
     const results = await pool.query(
         `
@@ -98,4 +98,4 @@ LIMIT 20;
     );
     res.json(results.rows);
 };
-module.exports = { getLocationsAlls, getNerbyLocations };
+module.exports = { getLocationsAlls, getNearbyLocations };

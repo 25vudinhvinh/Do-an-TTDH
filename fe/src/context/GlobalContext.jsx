@@ -7,6 +7,8 @@ const ContextProvider = ({ children }) => {
     const [inputValue, setInputValue] = useState('')
     const [locationSearch, setLocationSearch] = useState([])
     const [selectedLocation, setSelectedLocation] = useState(null)
+    const [popupInfor, setPopupInfor] = useState(false)
+    const [showButtonGroup, setShowButtonGroup] = useState(true)
 
     return (
         <GlobalContext.Provider
@@ -17,6 +19,10 @@ const ContextProvider = ({ children }) => {
                 setLocationSearch,
                 selectedLocation,
                 setSelectedLocation,
+                setPopupInfor,
+                popupInfor,
+                setShowButtonGroup,
+                showButtonGroup,
             }}
         >
             {children}

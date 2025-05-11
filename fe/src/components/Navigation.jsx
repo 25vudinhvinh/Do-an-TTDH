@@ -12,7 +12,8 @@ function Navigation() {
     const location = useLocation()
     const [recent, setRecent] = useState(false)
     const [saved, setSaved] = useState(false)
-    const { setLocationSearch } = useContext(GlobalContext)
+    const { setLocationSearch, setShowButtonGroup, setSelectedLocation } =
+        useContext(GlobalContext)
     useEffect(() => {
         if (location.pathname === '/home') {
             setRecent(false)
@@ -28,13 +29,16 @@ function Navigation() {
     const handleClickSaved = () => {
         navigate('/home/saved')
         setLocationSearch([])
+        setShowButtonGroup(false)
+        setSelectedLocation([])
     }
     const handleClickRecent = () => {
         setLocationSearch([])
         navigate('/home/recent')
+        setShowButtonGroup(false)
     }
     return (
-        <div className="bg-blue-50 w-full h-full flex flex-col gap-4 pt-25">
+        <div className="bg-blue-50 w-full h-full flex shadow-2xs flex-col gap-4 pt-25">
             <nav
                 onClick={handleClickSaved}
                 className="flex flex-col items-center hover:cursor-pointer select-none"

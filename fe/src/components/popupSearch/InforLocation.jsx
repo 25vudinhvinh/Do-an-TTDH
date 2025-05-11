@@ -6,8 +6,7 @@ import { GlobalContext } from '../../context/GlobalContext'
 import Rating from '@mui/material/Rating'
 import axios from 'axios'
 
-function InforLocation({ setShow, show }) {
-    const { selectedLocation } = useContext(GlobalContext)
+function InforLocation({ selectedLocation }) {
     const [activeTab, setActiveTab] = useState('overview')
     const avatar_url = localStorage.getItem('avatar_url')
     const username = localStorage.getItem('username') || 'User'
@@ -19,6 +18,7 @@ function InforLocation({ setShow, show }) {
     const [reviews, setReviews] = useState([])
     const [showToast, setShowToast] = useState(false)
     const [toastMessage, setToastMessage] = useState('')
+    const { setPopupInfor, setSelectedLocation } = useContext(GlobalContext)
     useEffect(() => {
         if (activeTab === 'reviews') {
             const fetchReviews = async () => {
@@ -33,8 +33,8 @@ function InforLocation({ setShow, show }) {
             }
             fetchReviews()
         }
-    }, [activeTab, selectedLocation.location_id])
-
+    }, [activeTab])
+    //[activeTab, selectedLocation.location_id]
     const handleChangeStar = (e, newStar) => {
         setStar(newStar)
     }
@@ -93,7 +93,7 @@ function InforLocation({ setShow, show }) {
         switch (activeTab) {
             case 'overview':
                 return (
-                    <div className="p-4 max-h-[calc(100%-340px)]">
+                    <div tabIndex="-1" className="p-4 max-h-[calc(100%-340px)]">
                         <div className="space-y-4">
                             <div>
                                 <p className="font-medium text-sm text-gray-700">
@@ -311,12 +311,12 @@ function InforLocation({ setShow, show }) {
                 return null
         }
     }
-    console.log(show)
+
     return (
-        <div className="fixed left-[33%] bg-white shadow-xl bottom-2 top-[15%] right-[38%] rounded-2xl scrollbar-hidden overflow-auto">
+        <div className="fixed left-[33%] bg-white shadow-2xs bottom-2 top-[15%] w-[30%]  rounded-2xl scrollbar-hidden overflow-auto">
             {/* Toast Notification */}
             {showToast && (
-                <div className="fixed top-20 right-2 bg-white w-[20%] p-3 rounded shadow-2xl transition-transform duration-300 ease-in-out transform translate-x-full animate-slide-in">
+                <div className="fixed top-20 right-[15%] bg-white min-w-[15%] p-[12px] rounded shadow-2xl transition-transform duration-300 ease-in-out transform translate-x-full animate-slide-in">
                     <div className="flex items-center gap-2">
                         <img className="w-[25px]" src={checkIcon} alt="check" />
                         <span className="font-semibold text-sm text-wrap text-green-800">
@@ -333,7 +333,10 @@ function InforLocation({ setShow, show }) {
                     alt={selectedLocation.name}
                 />
                 <div
-                    onClick={() => setShow(false)}
+                    onClick={() => {
+                        setPopupInfor(false)
+                        setSelectedLocation([])
+                    }}
                     className="bg-white p-1.5 rounded-full absolute top-3 right-3 cursor-pointer shadow-md"
                 >
                     <img className="w-5" src={closeIcon} alt="Đóng" />
@@ -374,7 +377,12 @@ function InforLocation({ setShow, show }) {
                     />
                 </div>
             </div>
-            <div className="flex justify-between px-4 items-center border-b border-gray-200">
+
+            {/* render tabs */}
+            <div
+                tabIndex="-1"
+                className="flex justify-between px-4 items-center border-b border-gray-200"
+            >
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}

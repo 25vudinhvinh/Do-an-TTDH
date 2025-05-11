@@ -3,9 +3,9 @@ const express = require("express");
 const router = express.Router();
 const {
     getLocationsAlls,
-    getNerbyLocations,
+    getNearbyLocations,
 } = require("../models/LocationDetail");
 
 router.post("/locations", getLocationsAlls);
-router.post("/locations/nearby", getNerbyLocations);
+router.post("/locations/nearby", getNearbyLocations);
 module.exports = router;
